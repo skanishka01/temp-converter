@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temperature Converter</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="decorative-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="diamond"></div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>Temperature Converter</h1>
+            <p>Convert between Celsius, Fahrenheit, and Kelvin</p>
+        </div>
+
+        <div class="converter-form">
+            <div class="input-group">
+                <label for="temperature">Enter Temperature:</label>
+                <input type="number" id="temperature" class="temperature-input" placeholder="Enter temperature value"
+                    step="any">
+            </div>
+
+            <div class="input-group">
+                <label>Select Input Unit:</label>
+                <div class="unit-selector">
+                    <div class="radio-group">
+                        <input type="radio" id="celsius" name="inputUnit" value="celsius" checked>
+                        <label for="celsius">Celsius (°C)</label>
+                    </div>
+                    <div class="radio-group">
+                        <input type="radio" id="fahrenheit" name="inputUnit" value="fahrenheit">
+                        <label for="fahrenheit">Fahrenheit (°F)</label>
+                    </div>
+                    <div class="radio-group">
+                        <input type="radio" id="kelvin" name="inputUnit" value="kelvin">
+                        <label for="kelvin">Kelvin (K)</label>
+                    </div>
+                </div>
+            </div>
+
+            <button type="button" class="convert-btn" onclick="convertTemperature()">Convert Temperature</button>
+        </div>
+
+        <div id="result" class="result-display">
+            Enter a temperature and click convert to see the results
+        </div>
+    </div>
+
+    <script>
+        function convertTemperature() {
+            const temperatureInput = document.getElementById('temperature');
+            const inputUnit = document.querySelector('input[name="inputUnit"]:checked').value;
+            const resultDiv = document.getElementById('result');
+
+            const inputTemp = parseFloat(temperatureInput.value);
+
+            // Validation
+            if (isNaN(inputTemp) || temperatureInput.value === '') {
+                showResult('Please enter a valid number!', true);
+                return;
+            }
+
+            let celsius, fahrenheit, kelvin;
+
+            // Convert input to Celsius first
+            switch (inputUnit) {
+                case 'celsius':
+                    celsius = inputTemp;
+                    break;
+                case 'fahrenheit':
+                    celsius = (inputTemp - 32) * 5 / 9;
+                    break;
+                case 'kelvin':
+                    celsius = inputTemp - 273.15;
+                    break;
+            }
+
+            // Convert from Celsius to other units
+            fahrenheit = (celsius * 9 / 5) + 32;
+            kelvin = celsius + 273.15;
+
+            // Format results
+            const results = [];
+            if (inputUnit !== 'celsius') {
+                results.push(`${celsius.toFixed(2)}°C`);
+            }
+            if (inputUnit !== 'fahrenheit') {
+                results.push(`${fahrenheit.toFixed(2)}°F`);
+            }
+            if (inputUnit !== 'kelvin') {
+                results.push(`${kelvin.toFixed(2)}K`);
+            }
+
+            const resultText = `${inputTemp}° ${getUnitSymbol(inputUnit)} = ${results.join(' = ')}`;
+            showResult(resultText, false);
+        }
+
+        function getUnitSymbol(unit) {
+            switch (unit) {
+                case 'celsius': return 'C';
+                case 'fahrenheit': return 'F';
+                case 'kelvin': return 'K';
+                default: return '';
+            }
+        }
+
+        function showResult(text, isError) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = text;
+            if (isError) {
+                resultDiv.classList.add('error');
+            } else {
+                resultDiv.classList.remove('error');
+            }
+        }
+
+        // Allow Enter key to trigger conversion
+        document.getElementById('temperature').addEventListener('keypress', function (event) {
+            if (event.key === 'Enter') {
+                convertTemperature();
+            }
+        });
+    </script>
+</body>
+
+</html>
